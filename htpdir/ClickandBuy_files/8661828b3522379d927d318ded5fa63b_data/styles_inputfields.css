@@ -1,0 +1,390 @@
+/* inputfields_onecolumn */
+.margleft {
+  margin-left : 0px;
+}
+
+div.onecolumn_block {
+	font-family:Verdana,Geneva,sans-serif; font-size:12px; color:#666666;   
+	width: 650px;
+	height: 260px;
+}
+
+div.input_area {
+	width: 229px;
+   	float: left;
+}
+
+div.error_area {
+  float: left;
+	margin-left: 15px;
+}
+
+div.error_message_one,
+div.error_message_two {
+	visibility:hidden;	
+	margin-top:65px;
+  width: 235px;
+	position:relative;
+	padding:8px;
+}
+
+div.error_message_two {
+	margin-top:-65px;
+	width: 383px;
+}
+
+div.error_message_two ul.messagebox_list {
+	list-style-image:url(../images/message_list_icon.png);
+	padding-left:18px;	
+}
+
+*div.error_message_two ul.messagebox_list {
+  margin: 0px;  
+}
+
+div.error_message_two ul.messagebox_list li{	
+	padding-left:6px;	
+}
+
+div.bgmiddleleft_messagebox_one,
+div.bgmiddleleft_messagebox_two {
+    position:absolute; left:-7px; top:38px; bottom:8px; width:8px;
+    background-image:url(../images/bg_login_messagebox.png); background-repeat:no-repeat;
+}
+
+div.bgmiddleleft_messagebox_two {
+    position:absolute; left:-7px; top:45px; bottom:8px; width:8px;
+}
+
+div.error_text{
+	padding:13px 13px 23px;
+    background-image:url(../images/bg_systembox_middle_middle.png); background-repeat:repeat;
+    font-family:Verdana,Geneva,sans-serif;
+    font-size:12px; color:#666678;
+}
+
+div.onecolumn_title {
+    font-size:15px; font-weight:bold;   
+	  margin-bottom: 15px;
+}
+
+div.onecolumn_label {
+    margin-bottom: 6px;
+}
+
+div.onecolumn_inputfield {
+    margin-bottom: 6px;       
+}
+
+div.onecolumn_inputfield input{
+ 	font-family:Verdana,Geneva,sans-serif; font-size:12px; color:#666666; 
+	padding: 0 0 0 9px;
+ 	display: block;
+ 	background-color: #F2EDE7;
+ 	width: 229px;
+ 	height:31px; 	
+}
+
+*div.onecolumn_inputfield input{
+	height: 22px; 
+  padding-top: 9px;
+}
+
+div.onecolumn_inputfield input.normal_mode.readonly,
+div.onecolumn_inputfield select.normal_mode.readonly {
+	border: 0;
+ 	background: none;	
+}
+div.onecolumn_inputfield input.normal_mode2.readonly,
+div.onecolumn_inputfield select.normal_mode2.readonly {
+        border: 0;
+        background: none;
+        margin-top: 3px;
+       padding-left: 0;
+}
+div.onecolumn_inputfield input.normal_mode,
+div.onecolumn_inputfield select.normal_mode {
+ 	border: 0;	
+}
+
+div.onecolumn_inputfield input.error_mode{
+ 	color:#FF0000; 	
+	border-style: solid;
+	border-color: #FF0000;
+	border-width: 1px;	
+}
+
+div.onecolumn_inputfield input{
+ 	font-family:Verdana,Geneva,sans-serif; font-size:12px; color:#666666; 
+	padding: 0 0 0 9px;
+ 	display: block;
+ 	background-color: #F2EDE7;
+ 	width: 229px;
+ 	height:31px; 	
+}
+
+
+
+
+*td.onecolumn_inputfield input{
+	height: 22px; 
+  padding-top: 9px;
+}
+
+td.onecolumn_inputfield input.normal_mode.readonly,
+td.onecolumn_inputfield select.normal_mode.readonly {
+	border: 0;
+ 	background: none;	
+}
+td.onecolumn_inputfield input.normal_mode2.readonly,
+td.onecolumn_inputfield select.normal_mode2.readonly {
+        border: 0;
+        background: none;
+        margin-top: 3px;
+       padding-left: 0;color:#666
+}
+td.onecolumn_inputfield input.normal_mode,
+td.onecolumn_inputfield select.normal_mode {
+ 	border: 0;	
+}
+
+
+
+div.onecolumn_link {
+    margin-bottom: 7px;   	
+	text-align:right;	  	
+}
+
+div.onecolumn_link a,
+div.onecolumn_link a:visited{
+    font-family:Verdana,Geneva,sans-serif; font-size:10px; color:#ff8000;   
+    text-decoration:none;
+	cursor:hand;  	
+}
+
+div.onecolumn_link a:hover,
+div.onecolumn_link a:focus{
+    text-decoration:underline; 		
+}
+
+div.separator {
+    height: 27px;	  	
+}
+
+/* inputfields_twocolumn */
+div.twocolumn_header{ padding-top:3px}
+
+div.twocolumn_block {
+    font-family:Verdana,Geneva,sans-serif; font-size:12px; color:#666666;   
+	width: 420px;
+	height: 127px;
+}
+
+div.twocolumn_line{
+	width: 352px;	
+	height: 31px;
+  margin-bottom: 15px;  
+}
+
+div.twocolumn_label {
+	float:left;
+	padding-top:10px;
+	width: 180px;
+	white-space: nowrap;
+	float:left
+}
+
+td.twocolumn_label {
+	float:left;
+	padding-top:10px;
+	width: 150px;
+	white-space: nowrap;
+	font-weight:bold
+}
+
+div.sepaErrorTextColor {
+	color: #A9000F;
+	margin-top: 3px;
+}
+
+div.sepa_text {
+    font-family:Verdana,Geneva,sans-serif; font-size:12px; color:#666666;   
+    margin: -19px 45px;
+    height: 220px;
+}
+
+div.twocolumn_inputfield {
+	float: left;
+	display: inline;
+}
+
+div.twocolumn_inputfield input {
+	background: url("../../images/CLICKANDBUY/inputbg.gif") repeat-x scroll 0 0 transparent;
+	border: 1px solid #E2E2E2;
+ 	font-family:Verdana,Geneva,sans-serif;
+ 	font-size:12px;
+ 	color:#666666; 
+	padding: 5px;
+ 	display: inline;
+ 	width: 198px;
+ 	height: 20px;
+ 	float:left;
+ 	margin-left:0px;
+ 	 	
+}
+
+
+div.twocolumn_inputfield select {
+	background: url("../../images/CLICKANDBUY/inputbg.gif") repeat-x scroll 0 0 transparent;
+	border: 1px solid #E2E2E2;
+	font-family:Verdana,Geneva,sans-serif;
+	font-size:12px;
+	color:#666666; 
+	padding: 5px;
+ 	display: inline;
+ 	width: 210px;
+ 	height: 30px;
+ 	float: left;
+}
+
+div.month_year {
+	width: 210px;
+	float: left;
+}
+
+div.twocolumn_inputfield select.month {
+ 	width: 120px;
+ 	margin-right: 10px;
+ 	float:left
+}
+
+div.twocolumn_inputfield select.year {
+	float: left;
+	width: 80px;	
+}
+
+*div.twocolumn_inputfield input,
+*div.twocolumn_inputfield select {
+  height: 20px; 
+  padding: 5px;
+}
+
+div.twocolumn_inputfield input.normal_mode.readonly,
+div.twocolumn_inputfield select.normal_mode.readonly {
+	border: 0;
+ 	background: none;	
+}
+div.twocolumn_inputfield select.normal_mode2.readonly {
+       border: 0;
+       background: none;
+       margin-top: 3px;
+       padding-left: 0;
+}
+div.twocolumn_inputfield input.normal_mode2, div.twocolumn_inputfield select.normal_mode2 {
+
+ border: 0;
+       background: none;
+       margin-top: 3px;
+       padding-left: 0;
+}
+html>body div.twocolumn_inputfield input.normal_mode2, div.twocolumn_inputfield select.normal_mode2 {
+
+ border: 0;
+       background: none;
+       margin-top: 3px;
+       padding-left: 0;
+}
+
+div.twocolumn_inputfield input.normal_mode,
+div.twocolumn_inputfield select.normal_mode {
+}
+
+div.twocolumn_inputfield input.normal_mode
+{
+	 margin-left:0px
+}
+
+*+html div.twocolumn_inputfield input.normal_mode {
+    margin-left: -10px;
+}
+
+* + html div.month_year input.normal_mode {
+    margin-left: 0px;
+}
+
+/* message box */
+div.error_area div.bgtopleft {
+    position:absolute;
+    left:0px; 
+    top:0px;
+    width:8px; 
+    height:8px;
+    background-image:url(../images/bg_systembox_left_top.png); 
+    background-repeat:no-repeat;
+}
+
+div.error_area div.bgtopmiddle {
+    position:absolute; 
+    left:8px; top:0px; right:8px; height:8px;
+    background-image:url(../images/bg_systembox_top_middle.png); 
+    background-repeat:repeat-x;
+}
+
+div.error_area div.bgtopright {
+    position:absolute; right:0px; top:0px;
+    width:8px; height:8px;
+    background-image:url(../images/bg_systembox_right_top.png); background-repeat:no-repeat;
+}
+
+div.error_area div.bgmiddleleft {
+    position:absolute; left:0px; top:8px; bottom:8px; width:8px;
+    background-image:url(../images/bg_systembox_left_middle.png); background-repeat:repeat-y;
+}
+
+div.error_area div.bgmiddlemiddle {
+    padding:13px;
+    background-image:url(../images/bg_systembox_middle_middle.png); background-repeat:repeat;
+    font-family:Verdana,Geneva,sans-serif; font-size:15px; color:#666678;
+}
+
+div.error_area div.bgmiddleright {
+    position:absolute; right:0px; top:8px; bottom:8px; width:8px;
+    background-image:url(../images/bg_systembox_right_middle.png); background-repeat:repeat-y;
+}
+
+*div.error_area div.boxone,
+*div.error_area div.boxtwo {
+    height: expression(parentNode.offsetHeight - 16 + 'px');
+}
+
+div.error_area div.bgbottomleft {
+    position:absolute; left:0px; bottom:0px;
+    width:8px; height:8px;
+    background-image:url(../images/bg_systembox_left_bottom.png); background-repeat:no-repeat;
+}
+
+div.error_area div.bgbottommiddle {
+    position:absolute; left:8px; bottom:0px; right:8px; height:8px;
+    background-image:url(../images/bg_systembox_bottom_middle.png); background-repeat:repeat-x;
+}
+
+*div.error_area div.bgtopmiddle,
+*div.error_area div.bgbottommiddle {
+    width: expression(parentNode.offsetWidth - 16 + 'px');
+}
+
+div.error_area div.bgbottomright {
+    position:absolute; right:0px; bottom:0px;
+    width:8px; height:8px;
+    background-image:url(../images/bg_systembox_right_bottom.png); background-repeat:no-repeat;
+}
+
+.clearfix{display: inline-block;}
+
+.clearfix:after{
+  content: ".";
+  display:block;
+  height:0;
+  clear:both;
+  visibility:hidden;
+}

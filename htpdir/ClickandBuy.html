@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<script src="ClickandBuy_files/framework.js" type="text/javascript"></script>
+<script src="ClickandBuy_files/ui.js" type="text/javascript"></script>
+		<script src="ClickandBuy_files/easyXDM.js" type="text/javascript"></script>
+		<script src="ClickandBuy_files/jquery_002.js" type="text/javascript"></script>
+		<script type="text/javascript" src="ClickandBuy_files/jquery.js"></script>
+		<script type="text/javascript" src="ClickandBuy_files/navmenu_002.js"></script>
+	<script type="text/javascript" src="ClickandBuy_files/script.js"></script>   		
+	<script type="text/javascript" src="ClickandBuy_files/navmenu.js"></script>
+	<script type="text/javascript" src="ClickandBuy_files/box.js"></script>			
+     <script type="text/javascript">
+	<!--
+		jQuery.noConflict();
+         var $j = jQuery;
+		-->
+		
+	</script>
+   
+   
+</head>
+<body>
+<form >
+						<input type="button" value="submit iframe" onclick="submitIframe();">
+</form>
+					<div id="piContainer"></div>
+	            
+					<script type="text/javascript">
+						<!--
+							(function ($) {
+							   $(document);
+							}(jQuery));
+
+							var transport;
+								
+							window.onload = function(){
+								loadIFrame("https://payment.clickandbuy-d2.com/gpg.ui//paypage/442bcf7ef173344fba5a35111cf0c526");
+							};
+							
+							function loadIFrame(paymentUrl){
+								createTransport(paymentUrl);
+							}
+							
+							function continueAfterSubmit(){
+								alert('iframe submitted. please continue');
+							}
+								
+							function createTransport(paymentUrl){
+								var iframeURL = "" + paymentUrl + "?lang=DE_DE";
+								transport = new easyXDM.Socket({
+									remote: iframeURL,
+									container: $("piContainer"),
+									onMessage: function(message, origin) {
+										if ( ! isNaN(message) ) {
+											this.container.getElementsByTagName("iframe")[0].style.height = (message-50) + "px";
+											this.container.getElementsByTagName("iframe")[0].style.width = "550px";
+										} else if (message == 'enable') {
+											transportValid = true;			
+										} else if (message == 'post') {
+											continueAfterSubmit();
+										} else if (message == 'plausibilization-error') {
+											handlePGError();
+										} else if (message == 'transaction-error') {
+											handlePGError();
+										} else if (message == 'error') {
+											handlePGError();
+										}
+									}
+								});
+							}
+							
+							
+							function submitIframe() {
+								transport.postMessage("submit");
+							}
+
+							function handlePGError() {
+								alert("error");
+							}
+		
+						-->
+					</script>
+
+</body></html>

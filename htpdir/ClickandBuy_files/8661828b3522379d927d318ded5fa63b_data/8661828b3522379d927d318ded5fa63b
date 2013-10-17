@@ -1,0 +1,438 @@
+
+//--DEBUG--START
+//		version 05.08.2010:18:15
+//--DEBUG--END
+var Ganesha = {
+
+	currentID:      undefined,
+	silent:         false,
+	eventMap:       new Array(),
+	submitEventMap: new Array(),
+	
+	environment:  {
+
+//--DEBUG--START
+			// returns a trimmed version of the element value
+			// todo also do a whitespace/dash trim?
+//--DEBUG--END
+
+		get: function(resource) {				
+			var matches = resource.match(/^([a-zA-Z0-9]+)_([a-zA-Z0-9.]+)/);
+
+//--DEBUG--START 
+			if (! matches || ! matches.length) { 
+				alert("no match on " + resource); 
+
+				return null; 
+			}
+
+			if (matches.length != 3) { 
+				alert("no two matches " + resource); 
+
+				return null; 
+			}
+//--DEBUG--END
+			
+			var elem = $('[name="' + matches[1] + '_' + Ganesha.currentID + 
+			             '_' + matches[2] + '"]');
+
+			if (! elem) return null;
+
+			return elem.length > 0 ? $.trim(elem.val()) : null;
+		},
+		
+		isChecked: function(resource) {				
+			var matches = resource.match(/^([a-zA-Z0-9]+)_([a-zA-Z0-9.]+)/);
+
+//--DEBUG--START 
+			if (! matches || ! matches.length) { 
+				alert("no match on " + resource); 
+
+				return null; 
+			}
+
+			if (matches.length != 3) { 
+				alert("no two matches " + resource); 
+
+				return null; 
+			}
+//--DEBUG--END
+			
+			var elem = $('[name="' + matches[1] + '_' + Ganesha.currentID + 
+			             '_' + matches[2] + '"]');
+
+			if (! elem) return null;
+
+			if (elem.length > 0) {
+				return $(elem).attr('checked') ? true : false;	
+			}
+			else {
+				return true;
+			}
+			
+		},
+
+		setError: function (resource, error) {
+			if (Ganesha.silent) return null;
+			
+			var matches = resource.match(/^([a-zA-Z0-9]+)_([a-zA-Z0-9]+)/);
+
+//--DEBUG--START 
+			if (! matches || ! matches.length) { 
+				alert("no match on " + resource); 
+
+				return null; 
+			}
+
+			if(matches.length != 3) { 
+				alert("no two matches " + resource); 
+
+				return null; 
+			}
+//--DEBUG--END
+
+			var error_label = $("#" + matches[1] + "_" + Ganesha.currentID + 
+			                    "_" + matches[2]);
+
+//--DEBUG--START 
+			if (! error_label) {
+				alert("setError()\nundefined: " + "#" + matches[1] + "_" + 
+				       Ganesha.currentID + "_" + matches[2]); 
+
+				return null;
+			}
+//--DEBUG--END
+
+			var class_name = jQuery.prop ? error_label.prop('className') : error_label.attr('className');
+			if (! class_name) return null;
+			
+			if (class_name.match(/invisible/)) {
+				error_label.text(errors[error]);
+				error_label.addClass("visible");
+				error_label.removeClass("invisible");
+			}
+			
+			return false;
+		},
+		
+		clearError: function (resource) {
+			var matches = resource.match(/^([a-zA-Z0-9]+)_([a-zA-Z0-9]+)/);
+
+//--DEBUG--START 
+			if (! matches || ! matches.length) { 
+				alert("no match on " + resource); 
+
+				return null; 
+			}
+		
+			if (matches.length != 3) { 
+				alert("no two matches " + resource); 
+
+				return null; 
+			}
+//--DEBUG--END
+
+			var error_label = $("#" + matches[1] + "_" + Ganesha.currentID + 
+			                    "_" + matches[2]);
+
+//--DEBUG--START 
+			if (! error_label) {
+				alert("clearError()\nundefined: " + "#" + matches[1] + 
+				      "_" + Ganesha.currentID + "_" + matches[2]); 
+
+				return null;
+			}
+//--DEBUG--END
+
+			error_label.text("");
+			
+			return true;
+		}
+	},
+	
+	callbacks: {
+		clearAllErrors: function() {
+
+//--DEBUG--START
+			// Callback overwritten by the pay page.
+//--DEBUG--END			
+
+		},
+		
+		afterCheck: function( elementName, checkName, result ) {
+
+//--DEBUG--START
+			// Callback overwritten by the pay page.
+//--DEBUG--END			
+
+		},
+		
+		mustCheck: function( elementName ) {
+
+//--DEBUG--START
+			// Callback overwritten by the pay page.
+//--DEBUG--END
+
+			return true;
+		}
+	},
+
+	eventsFor: function(resource) {
+		if (! Ganesha.callbacks.mustCheck(resource)) return null;
+		
+		var matches = resource.match(/^([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)/);
+
+//--DEBUG--START
+		if (! matches || ! matches.length) { 
+			alert("undefined " + resource); 
+
+			return null;
+		}
+
+		if (matches.length != 4) { 
+			alert("no two matches " + resource); 
+
+			return null;
+		}
+
+//--DEBUG--END
+
+		Ganesha.currentID = matches[2];
+		var className = matches[1] + "_" + matches[3];	
+		var evts = this.eventMap[className];			
+
+//--DEBUG--START
+
+		if (! evts) { 
+			alert("eventsFor: No events for " + resource); 
+
+			return null;
+		}
+//--DEBUG--END
+
+		var checkResult = true;
+
+		for (var i = 0; i < evts.length; i++) {
+			var result = evts[i](); 
+
+			if (! result) {
+
+//--DEBUG--START
+//				alert("Bang!!!");
+//--DEBUG--END
+
+				checkResult = false;
+				break;
+			}
+		}
+
+		Ganesha.callbacks.afterCheck(resource, className, checkResult);
+
+		return checkResult;
+	},
+	
+//--DEBUG--START	
+	/*
+	TODO: Hack: suppress execution of certain test for predefined payment instruments, e. g. 
+	suppress "owner epmty" for existing credit cards, because input field does not have valid
+	class, or card number, vaidity date etc...
+*/
+//--DEBUG--END
+
+		checkSubmit: function(silent) {
+			Ganesha.callbacks.clearAllErrors();
+
+			var checks = this.submitEventMap[Ganesha.currentPaymentMethod];
+
+			if (! checks) {
+//--DEBUG--START
+				console.log("checkSubmit: No events for " + checks); 
+//--DEBUG--END
+				return null;
+			}
+			
+			Ganesha.silent = silent;
+
+			var result = true;
+
+            for (var i = 0; i < checks.length; i++) {
+            	var currentResult = checks[i]();
+
+            	if (currentResult != null) result = currentResult && result;	
+            }
+
+            Ganesha.silent = false;
+
+            return result;
+		},
+
+	initEvents: function() {
+
+
+this.eventMap ['creditCard_csc'] = new Array();
+this.eventMap ['creditCard_csc'].push(check_cc_csc_empty);
+this.eventMap ['creditCard_csc'].push(check_cc_csc_number);
+
+this.eventMap ['creditCard_owner'] = new Array();
+this.eventMap ['creditCard_owner'].push(check_cc_owner_empty);
+this.eventMap ['creditCard_owner'].push(check_cc_owner);
+
+this.eventMap ['creditCard_brand'] = new Array();
+this.eventMap ['creditCard_brand'].push(check_cc_brand_empty);
+this.eventMap ['creditCard_brand'].push(check_cc_number_empty);
+this.eventMap ['creditCard_brand'].push(check_visa_cc_number);
+this.eventMap ['creditCard_brand'].push(check_amex_cc_number);
+this.eventMap ['creditCard_brand'].push(check_chinaunion_cc_number);
+this.eventMap ['creditCard_brand'].push(check_diners_cc_number);
+this.eventMap ['creditCard_brand'].push(check_discover_cc_number);
+this.eventMap ['creditCard_brand'].push(check_jcb_cc_number);
+this.eventMap ['creditCard_brand'].push(check_master_cc_number);
+
+this.eventMap ['creditCard_expiryDate'] = new Array();
+this.eventMap ['creditCard_expiryDate'].push(check_cc_expiryDate_empty);
+this.eventMap ['creditCard_expiryDate'].push(check_cc_expiryDate);
+
+this.eventMap ['creditCard_cardNumber'] = new Array();
+this.eventMap ['creditCard_cardNumber'].push(check_cc_number_empty);
+this.eventMap ['creditCard_cardNumber'].push(check_visa_cc_number);
+this.eventMap ['creditCard_cardNumber'].push(check_amex_cc_number);
+this.eventMap ['creditCard_cardNumber'].push(check_chinaunion_cc_number);
+this.eventMap ['creditCard_cardNumber'].push(check_diners_cc_number);
+this.eventMap ['creditCard_cardNumber'].push(check_discover_cc_number);
+this.eventMap ['creditCard_cardNumber'].push(check_jcb_cc_number);
+this.eventMap ['creditCard_cardNumber'].push(check_master_cc_number);
+this.eventMap ['creditCard_cardNumber'].push(check_clickandbuy_cc_number);
+
+this.eventMap ['directDebit_accountNumber'] = new Array();
+this.eventMap ['directDebit_accountNumber'].push(check_bank_accountNumber);
+this.eventMap ['directDebit_accountNumber'].push(check_bank_accountNumber_empty);
+
+this.eventMap ['directDebit_sepaMandate'] = new Array();
+this.eventMap ['directDebit_sepaMandate'].push(check_sepa_mandate_empty);
+
+this.eventMap ['directDebit_bankZipCode'] = new Array();
+this.eventMap ['directDebit_bankZipCode'].push(check_bank_bankZipCode);
+this.eventMap ['directDebit_bankZipCode'].push(check_bank_bankZipCode_empty);
+
+this.eventMap ['directDebit_bankName'] = new Array();
+this.eventMap ['directDebit_bankName'].push(check_bank_bankName_empty);
+this.eventMap ['directDebit_bankName'].push(check_bank_bankName);
+
+this.eventMap ['directDebit_owner'] = new Array();
+this.eventMap ['directDebit_owner'].push(check_bank_owner_empty);
+this.eventMap ['directDebit_owner'].push(check_bank_owner);
+
+this.submitEventMap ['creditCard'] = new Array();
+this.submitEventMap ['creditCard'].push(check_cc_owner_empty);
+this.submitEventMap ['creditCard'].push(check_cc_owner);
+this.submitEventMap ['creditCard'].push(check_cc_brand_empty);
+this.submitEventMap ['creditCard'].push(check_cc_number_empty);
+this.submitEventMap ['creditCard'].push(check_visa_cc_number);
+this.submitEventMap ['creditCard'].push(check_amex_cc_number);
+this.submitEventMap ['creditCard'].push(check_chinaunion_cc_number);
+this.submitEventMap ['creditCard'].push(check_diners_cc_number);
+this.submitEventMap ['creditCard'].push(check_discover_cc_number);
+this.submitEventMap ['creditCard'].push(check_jcb_cc_number);
+this.submitEventMap ['creditCard'].push(check_master_cc_number);
+this.submitEventMap ['creditCard'].push(check_clickandbuy_cc_number);
+this.submitEventMap ['creditCard'].push(check_cc_expiryDate_empty);
+this.submitEventMap ['creditCard'].push(check_cc_expiryDate);
+this.submitEventMap ['creditCard'].push(check_cc_csc_empty);
+this.submitEventMap ['creditCard'].push(check_cc_csc_number);
+
+this.submitEventMap ['directDebit'] = new Array();
+this.submitEventMap ['directDebit'].push(check_bank_owner_empty);
+this.submitEventMap ['directDebit'].push(check_bank_owner);
+this.submitEventMap ['directDebit'].push(check_bank_bankName_empty);
+this.submitEventMap ['directDebit'].push(check_bank_bankName);
+this.submitEventMap ['directDebit'].push(check_bank_accountNumber);
+this.submitEventMap ['directDebit'].push(check_bank_accountNumber_empty);
+this.submitEventMap ['directDebit'].push(check_bank_bankZipCode);
+this.submitEventMap ['directDebit'].push(check_bank_bankZipCode_empty);
+this.submitEventMap ['directDebit'].push(check_sepa_mandate_empty);
+
+
+//		this.initListeners();
+	}
+}
+
+$(document).ready(function() { Ganesha.initEvents(); });
+
+function check_master_cc_number() {
+ var brand = Ganesha.environment.get('creditCard_brand'); if (! brand || brand != 'MasterCard') return null; var cc_number = Ganesha.environment.get('creditCard_cardNumber'); if (! cc_number) return null; cc_number = ganesha_to_number(cc_number); if (! cc_number) return false; var iin = cc_number.substring(0, 6); if (cc_number.length != 16 || ! ganesha_check_master_iin_range(iin)) return Ganesha.environment.setError('creditCard_cardNumber', 1014); return ganesha_luhn_check(cc_number) || Ganesha.environment.setError('creditCard_cardNumber', 1015);}
+function check_bank_bankZipCode_empty() {	
+ return ganesha_check_field_empty('directDebit_bankZipCode',1002);}
+function check_bank_owner_empty() {
+ return ganesha_check_field_empty('directDebit_owner', 3001);}
+function check_bank_bankName() {
+ return ganesha_check_bank_name('directDebit_bankName', 3013);}
+function check_bank_bankName_empty() {
+ return ganesha_check_field_empty('directDebit_bankName', 1007);}
+function check_bank_accountNumber() { 
+ var account_number = Ganesha.environment.get('directDebit_accountNumber'); if (account_number == null || account_number == '') return null; if(!/^[0-9\t ]+$/.test(account_number)) { Ganesha.environment.setError('directDebit_accountNumber', 3006); return false; } return ganesha_check_is_number('directDebit_accountNumber', 3006) && ganesha_check_bank_account_number('directDebit_accountNumber', 3005);} 
+function check_cc_expiryDate_empty() {	
+ return ganesha_check_field_empty('creditCard_expiryDate.year',1008) && ganesha_check_field_empty('creditCard_expiryDate.month',1009);}
+function check_amex_cc_number() {
+ var brand = Ganesha.environment.get('creditCard_brand'); if (! brand || brand != 'Amex') return null; var cc_number = Ganesha.environment.get('creditCard_cardNumber'); if (! cc_number) return null; cc_number = ganesha_to_number(cc_number); if (! cc_number) return false; var iin = cc_number.substring(0, 6); if (cc_number.length != 15 || ! ganesha_check_amex_iin_range(iin)) return Ganesha.environment.setError('creditCard_cardNumber', 1014); return ganesha_luhn_check(cc_number) || Ganesha.environment.setError('creditCard_cardNumber', 1015);}
+function check_sepa_mandate_empty() {	
+ return ganesha_check_sepa_mandate_empty('directDebit_sepaMandate',1002);}
+function check_discover_cc_number() {
+ var brand = Ganesha.environment.get('creditCard_brand'); if (! brand || brand != 'Discover') return null; var cc_number = Ganesha.environment.get('creditCard_cardNumber'); if (! cc_number) return null; cc_number = ganesha_to_number(cc_number); if (! cc_number) return false; var iin = cc_number.substring(0, 6); if (cc_number.length != 16 && ! ganesha_check_diners_iin_range(iin)) return Ganesha.environment.setError('creditCard_cardNumber', 1014); return ganesha_luhn_check(cc_number) || Ganesha.environment.setError('creditCard_cardNumber', 1015);}
+function check_cc_csc_empty() {	
+ return ganesha_check_field_empty('creditCard_csc',1003);}
+function check_cc_owner() {	
+ return ganesha_check_owner('creditCard_owner', 1007);}
+function check_bank_owner() {	
+ var owner = Ganesha.environment.get('directDebit_owner'); if (owner == null) return null; owner = (owner + '').replace(/^\s*|\s*$/, ''); return ganesha_check_owner('directDebit_owner', 3009);}
+function check_bank_bankZipCode() {
+ return ganesha_check_bank_zip_code('directDebit_bankZipCode', 4001);}
+function check_cc_csc_number() {
+ var brand = Ganesha.environment.get('creditCard_brand'); if (! brand) return null; var csc = Ganesha.environment.get('creditCard_csc'); if (csc == null) return null; var ndigits = brand == 'Amex' ? 4 : 3; return ganesha_check_is_number('creditCard_csc', 1005) && ganesha_check_number_of_digits('creditCard_csc', 1011, ndigits);}
+function check_bank_accountNumber_empty() {	
+ return ganesha_check_field_empty('directDebit_accountNumber',1002);}
+function check_chinaunion_cc_number() {
+ var brand = Ganesha.environment.get('creditCard_brand'); if (! brand || brand != 'UnionPay') return null; var cc_number = Ganesha.environment.get('creditCard_cardNumber'); if (! cc_number) return null; cc_number = ganesha_to_number(cc_number); if (! cc_number) return false; var iin = cc_number.substring(0, 6); if (cc_number.length < 16 || cc_number.length > 19 || (! iin.match(/^(62[4-6]\d{3}|628[2-8]\d{2})$/) && (! (iin >= 622126 && iin <= 622925)))) return Ganesha.environment.setError('creditCard_cardNumber', 1014); return ganesha_luhn_check(cc_number) || Ganesha.environment.setError('creditCard_cardNumber', 1015);}
+function check_cc_owner_empty() {	
+ return ganesha_check_field_empty('creditCard_owner',1002);}
+function check_diners_cc_number() {
+ var brand = Ganesha.environment.get('creditCard_brand'); if (! brand || brand != 'DinersClub') return null; var cc_number = Ganesha.environment.get('creditCard_cardNumber'); if (! cc_number) return null; cc_number = ganesha_to_number(cc_number); if (! cc_number) return false; var iin = cc_number.substring(0, 6); if (cc_number.length != 14 || ! ganesha_check_diners_iin_range(iin)) return Ganesha.environment.setError('creditCard_cardNumber', 1014); return ganesha_luhn_check(cc_number) || Ganesha.environment.setError('creditCard_cardNumber', 1015);}
+function check_clickandbuy_cc_number() {var brand = Ganesha.environment.get('creditCard_brand'); if (! brand || brand != 'MasterCard') return null; var cc_number = Ganesha.environment.get('creditCard_cardNumber'); if (! cc_number) return null; cc_number = ganesha_to_number(cc_number); if (! cc_number) return false; var iin = cc_number.substring(0, 6); if (ganesha_check_mastercard_maestro_iin_clickandbuy_range(iin)) return Ganesha.environment.setError('creditCard_cardNumber', 6001);}function check_visa_cc_number() {
+ var brand = Ganesha.environment.get('creditCard_brand'); if (! brand || brand != 'Visa') return null; var cc_number = Ganesha.environment.get('creditCard_cardNumber'); if (! cc_number) return null; cc_number = ganesha_to_number(cc_number); if(! cc_number.match(/^4\d{12}(?:\d{3})?$/)) return Ganesha.environment.setError('creditCard_cardNumber', 1014); return ganesha_luhn_check(cc_number) || Ganesha.environment.setError('creditCard_cardNumber', 1015);}
+function check_cc_brand_empty() {	
+ return ganesha_check_field_empty('creditCard_brand',1006);}
+function check_jcb_cc_number() {
+ var brand = Ganesha.environment.get('creditCard_brand'); if (! brand || brand != 'Jcb') return null; var cc_number = Ganesha.environment.get('creditCard_cardNumber'); if (! cc_number) return null; cc_number = ganesha_to_number(cc_number); if (! cc_number) return false; var iin = cc_number.substring(0, 6); if (( !(cc_number.length == 15 || cc_number.length == 16)) || ! ganesha_check_jcb_iin_range(iin)) return Ganesha.environment.setError('creditCard_cardNumber', 1014); return ganesha_luhn_check(cc_number) || Ganesha.environment.setError('creditCard_cardNumber', 1015);}
+function check_cc_number_empty() {	
+ return ganesha_check_field_empty('creditCard_cardNumber', 1001);}
+function check_cc_expiryDate() {
+ return ganesha_check_date(Ganesha.environment.get('creditCard_expiryDate.year'), Ganesha.environment.get('creditCard_expiryDate.month'), 1) || Ganesha.environment.setError('creditCard_expiryDate.year', 1010);}
+function ganesha_check_master_iin_range(iin) {
+ return (iin >= 510000 && iin <= 557711) || (iin >= 557713 && iin <= 559999) || (iin >= 633179 && iin <= 633179);}
+function ganesha_to_number(value) {
+ if (value == null) return null; value = value.replace(/[-\/#\s]*/g, ''); return value;}
+function ganesha_check_number_of_digits(field, errno, min, max) {
+ if (! max) max = min; var number = Ganesha.environment.get(field); return ganesha_check_is_number(field) && number.length >= min && number.length <= max || Ganesha.environment.setError(field, errno);}
+function ganesha_luhn_check(number) {
+ number = (number + '').replace(/\D+/g, ''); if (! number.length) return false; var luhnArr = [[0,2,4,6,8,1,3,5,7,9],[0,1,2,3,4,5,6,7,8,9]]; var sum = 0; number.replace(/[\d]/g, function(c, p, o) { sum += luhnArr[(o.length - p) & 1][parseInt(c, 10)]; }); return (sum % 10 === 0) && (sum > 0);}
+function ganesha_check_is_number(field, errno) {
+ var value = Ganesha.environment.get(field); if (value == null) return null; value = value.replace(/^\s*|\s*$/, ''); value = ganesha_to_number(value); return ! isNaN(value) ? value.length : Ganesha.environment.setError(field, errno);}
+function ganesha_check_diners_iin_range(iin) {
+ return (iin >= 201400 && iin <= 201499) || (iin >= 214900 && iin <= 214999) || (iin >= 300000 && iin <= 305999) || (iin >= 309505 && iin <= 309593) || (iin >= 360000 && iin <= 369999) || (iin >= 380000 && iin <= 398593) || (iin >= 398595 && iin <= 399999);}
+function ganesha_check_bank_account_number(field, errno) {
+ var account_number = Ganesha.environment.get(field); if (account_number == null || account_number == '') return null; var number_length = ganesha_check_is_number(field, errno); if (number_length == null) return null; return number_length && number_length <= 10 || Ganesha.environment.setError(field, errno);}
+function ganesha_check_jcb_iin_range(iin) {
+ return (iin >= 180000 && iin <= 180099) || (iin >= 213100 && iin <= 213199) || (iin >= 352800 && iin <= 358999);}
+function ganesha_check_bank_zip_code(field, errno) {
+ var bank_zip_code = Ganesha.environment.get(field); if (bank_zip_code == null || bank_zip_code == '') return null; var number_length = ganesha_check_is_number(field, errno); if (number_length == null) return null; return number_length && number_length == 8 || Ganesha.environment.setError(field, errno);}
+function ganesha_check_owner(field, errno) {
+ var owner = Ganesha.environment.get(field); if (owner == null) return null; owner = (owner + '').replace(/^\s*|\s*$/, ''); if (! owner) return null; if (owner.match(/^\d+$/) /* || owner.charAt(0).match(/^\d*$/) */) return Ganesha.environment.setError(field, errno); var BasicLatinLetters       = "A-Za-z"; var Latin1SupplementLetters = "\u00c0-\u00ff"; var LatinExtendedALetters   = "\u0100-\u017f"; var LatinExtendedBLetters   = "\u0180-\u024f"; var GreekCopticLetters      = "\u0370-\u03ff"; var CyrillicLetters         = "\u0400-\u04ff"; var ArmenianLetters         = "\u0530-\u058f"; var HebrewLetters           = "\u0590-\u05ff"; var ArabicLetters           = "\u0600-\u06ff"; var DevanagariLetters       = "\u0900-\u097f"; var BengaliLetters          = "\u0980-\u09ff"; var GurmukhiLetters         = "\u0a00-\u0a7f"; var GujaratiLetters         = "\u0a80-\u0aff"; var OriyaLetters            = "\u0b00-\u0b7f"; var TamilLetters            = "\u0b80-\u0bff"; var TeluguLetters           = "\u0c00-\u0c7f"; var KannadaLetters          = "\u0c80-\u0cff"; var MalayalamLetters        = "\u0d00-\u0d7f"; var ThaiLetters             = "\u0e00-\u0e7f"; var LaoLetters              = "\u0e80-\u0eff"; var TibetanLetters          = "\u0f00-\u0fbf"; var GeorgianLetters         = "\u10a0-\u10ff"; var HangulJamoLetters       = "\u1100-\u11ff"; var HiraganaLetters         = "\u3040-\u309f"; var KatakanaLetters         = "\u30a0-\u30ff"; var BopomofoLetters         = "\u3100-\u312f"; var all_letters = BasicLatinLetters + Latin1SupplementLetters + LatinExtendedALetters + LatinExtendedBLetters + GreekCopticLetters + CyrillicLetters + ArmenianLetters + HebrewLetters + ArabicLetters + DevanagariLetters + BengaliLetters + GurmukhiLetters + GujaratiLetters + OriyaLetters + TamilLetters + TeluguLetters + KannadaLetters + MalayalamLetters + ThaiLetters + LaoLetters + TibetanLetters + GeorgianLetters + HangulJamoLetters + HiraganaLetters + KatakanaLetters + BopomofoLetters; var owner_regex = new RegExp("^[0-9" + all_letters + "][- 0-9.()&/'\"," + all_letters + "]*$"); return owner.match(owner_regex) || Ganesha.environment.setError(field, errno);}
+function ganesha_check_mastercard_maestro_iin_clickandbuy_range(iin) {return (iin == 521944 || iin == 670864 || iin == 518330 || iin == 670884 || iin == 518493 || iin == 670880 || iin == 518653 || iin == 670882 || iin == 518900 || iin == 670885 || iin == 520367 || iin == 670878 || iin == 520924 || iin == 670886 || iin == 521040 || iin == 670881 || iin == 522249 || iin == 670887 || iin == 522816 || iin == 670879 || iin == 525444 || iin == 670883);}function ganesha_check_bank_name(field, errno) {
+ var bank_name = Ganesha.environment.get(field); if (bank_name == null) return null; bank_name = (bank_name + '').replace(/^\s*|\s*$/, ''); bank_name = bank_name.replace(/\s+/g, ' '); return bank_name.match(/[a-zA-Z]+[- a-zA-Z0-9.()&\/'",\w]*$/) || Ganesha.environment.setError(field, errno);}
+function ganesha_check_field_empty(field, errno) {
+ var value = Ganesha.environment.get(field); if (value == null) return null; value = value.replace(/\s/g, ''); return value || Ganesha.environment.setError(field, errno);}
+function ganesha_check_sepa_mandate_empty(field, errno) {
+ var value = Ganesha.environment.isChecked(field); if (value == null) return null; return value == true || Ganesha.environment.setError(field, errno);}
+function ganesha_check_date(year, month, tense) {
+ tense = tense ? (tense == 'past' || parseInt(tense) == -1 ? -1 : tense == 'future' || parseInt(tense) == 1 ? 1 : 0) : 0; var date = new Date(year, month - 1); if (! date) return false; var today   = new Date(); if (tense == -1) return date.getFullYear() < today.getFullYear() || date.getFullYear() == today.getFullYear() && date.getMonth() <= today.getMonth(); else return date.getFullYear() > today.getFullYear() || date.getFullYear() == today.getFullYear() && date.getMonth() >= today.getMonth();}
+function ganesha_check_amex_iin_range(iin) {
+ return (iin >= 340000 && iin <= 349999) || (iin >= 370000 && iin <= 379999);}
